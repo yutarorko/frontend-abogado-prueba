@@ -1,0 +1,28 @@
+
+<br>
+<div >
+    <p-card class="flex justify-content-center" [style]="{width: '80%'}" styleClass="p-card-shadow">
+        <br>
+        <img alt="Card" class="img-log" src="/assets/ico.svg" style="width: 80%;margin: auto; display: block;">
+        <form method="post">
+            <h2 style="text-align: center;">{{titulo}}</h2>
+            <div class="grid p-fluid">
+                <!--<div class="col-12 md:col-3"></div>-->
+                <div class="col-12 md:col-6">
+                    <h3>Usuario</h3>
+                    <input autocomplete="off" [(ngModel)]="usuario.username" type="text" name="username" id="username" pInputText placeholder="Usuario" autofocus required> 
+                </div>
+                <div class="col-12 md:col-6">
+                    <h3>Contraseña</h3>
+                    <input autocomplete="off" [(ngModel)]="usuario.password" type="password" name="password" id="password" pInputText placeholder="Contraseña" required> 
+                </div>
+            </div>
+        </form>
+
+        <ng-template pTemplate="footer">
+            <p-button class="flex justify-content-center" type="submit" (click)="login()" label="Iniciar Sesión" icon="pi pi-check"></p-button>
+        </ng-template>
+        <p>Copyright &copy; YAWAR TECH S.A.C. 2022 - Todos los derechos reservados</p>
+        <p>V 1.0.0</p>
+    </p-card>
+</div>

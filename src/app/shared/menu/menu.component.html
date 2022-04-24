@@ -1,0 +1,5 @@
+<p-menubar *ngIf="authService.hasRole('ROLE_USER')" [model]="items">
+    <ng-template pTemplate="start">
+        <img src="/assets/ico.svg" height="40" class="mr-2">
+    </ng-template>
+</p-menubar>

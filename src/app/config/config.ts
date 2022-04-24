@@ -1,0 +1,1 @@
+export const URL_BACKEND = 'https://backend-abogados-cusco.herokuapp.com';
