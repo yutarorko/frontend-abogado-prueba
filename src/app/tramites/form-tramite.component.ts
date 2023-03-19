@@ -24,6 +24,7 @@ export class FormTramiteComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    
     this.primengConfig.ripple = true;
     this.cargarTramite();
   }
@@ -34,7 +35,10 @@ export class FormTramiteComponent implements OnInit {
         let id = params['id'];
         if(id){
           this.tramiteService.getTramite(id).subscribe(
-            (tramite) => this.tramite = tramite
+            (tramite) => 
+            {
+              this.tramite = tramite
+            }
           )
         }
       }
@@ -43,6 +47,7 @@ export class FormTramiteComponent implements OnInit {
 
   create():void{
     if(this.tramite.nombre && this.tramite.descripcion && this.tramite.precio ){
+      this.tramite.tipo = "tramite"
       this.tramiteService.saveTramite(this.tramite).subscribe(tramite =>{
         Swal.fire('Nueva tramite creado',`Tramite ${tramite.nombre}, ha sido creado con éxito!`,'success');
         this.router.navigate(['/tramites']);
@@ -55,8 +60,14 @@ export class FormTramiteComponent implements OnInit {
   update(){
     if(this.tramite.nombre && this.tramite.descripcion && this.tramite.precio ){
       this.tramiteService.updateTramite(this.tramite).subscribe(tramite =>{
-        Swal.fire('Tramite editado',`Tramite ${tramite.nombre}, ha sido editado con éxito!`,'success');
-        this.router.navigate(['/tramites']);
+        if(this.tramite.id!=1){
+          Swal.fire('Tramite editado',`Tramite ${tramite.nombre}, ha sido editado con éxito!`,'success');
+          this.router.navigate(['/tramites']);
+        }
+        else{
+          Swal.fire('Cuota mensual fue editado',`Cuota mensual del colegio de abogados ha sido editado con éxito!`,'success');
+          this.router.navigate(['/colegiados']);
+        }
       });
     }
     else{

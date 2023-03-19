@@ -59,6 +59,15 @@ export class TramiteService {
       })
     );
   }
+  getTramites1(term:string):Observable<Tramite[]>{
+    this.urlEndPoint = URL_BACKEND + '/api';
+    return this.http.get<Tramite[]>(this.urlEndPoint+`/multas/${term}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
 
   saveTramite(tramite:Tramite):Observable<Tramite>{
     return this.http.post<Tramite>(this.urlEndPoint,tramite,{headers:this.agregarAuthorizationHeader()}).pipe(

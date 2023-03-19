@@ -27,6 +27,7 @@ export class DetalleFacturaComponent implements OnInit {
       let id = +params.get('id')!;
       this.facturaService.getFactura(id).subscribe(factura =>{
         this.factura = factura;
+        this.factura.fechaPago = factura.fechaPago.substring(0,10)+' / '+factura.fechaPago.substring(11,19)
       })
     })
   }

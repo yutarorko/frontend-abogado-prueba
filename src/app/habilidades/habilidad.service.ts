@@ -16,6 +16,9 @@ export class HabilidadService {
   private urlEndPoint:string= URL_BACKEND + "/api/colegiados";
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json' });
 
+  private urlExterna: string = `https://dniruc.apisperu.com/api/v1/dni/`
+  private tokenExterno: string = `?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Inl1dGFyb3Jrb0BnbWFpbC5jb20ifQ.96urCEnWLtx3gRbW2BrG4_nE86naXEBUApW1eskEfvs`;
+
   constructor(private http:HttpClient, private router:Router,public authService:AuthService) { }
 
   private agregarAuthorizationHeader(){
@@ -40,6 +43,15 @@ export class HabilidadService {
 
   getHabilidades():Observable<Habilidad[]>{
     return this.http.get<Habilidad[]>(this.urlEndPoint+`/habilidades`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+  //MEtodo de prueba
+  getDni(dni:string):Observable<any>{
+    return this.http.get<any>(this.urlExterna+`${dni}`+this.tokenExterno).pipe(
       catchError(e=>{
         this.isNoAutorizado(e);
         return throwError(e);

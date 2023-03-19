@@ -32,9 +32,12 @@
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/vela-green/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeflex/primeflex.css"
+              "node_modules/primeflex/primeflex.css",
+              "node_modules/ngx-spinner/animations/ball-circus.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/chart.js/dist/chart.js"
+            ]
           },
           "configurations": {
             "production": {

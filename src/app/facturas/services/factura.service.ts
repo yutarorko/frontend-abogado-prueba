@@ -62,9 +62,68 @@ export class FacturaService {
       })
     );
   }
+  //Extornar factura
+  extornar(factura:Factura):Observable<Factura>{
+    return this.http.put<Factura>(`${this.urlEndPoint}/${factura.id}`,factura,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
   //Filtrar tramites
   filtrarTramites(term:string):Observable<Tramite[]>{
     return this.http.get<Tramite[]>(`${this.urlEndPoint}/filtrar-tramites/${term}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+
+  //Filtrar cursos
+  filtrarCursos(term:string):Observable<Tramite[]>{
+    return this.http.get<Tramite[]>(`${this.urlEndPoint}/filtrar-cursos/${term}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+
+  //Validar nro de factura
+  validarFactura(term:string):Observable<number>{
+    return this.http.get<number>(`${this.urlEndPoint}/validar/${term}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+
+  //SVDY 08012023 - Validar nro de factura para extornar
+  validarExtornoCuota(term:string):Observable<number>{
+    return this.http.get<number>(`${this.urlEndPoint}/validar-extorno/${term}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+
+  //Traer lista de factura por dia
+  listarFacturaPorDia(term1:string,term2:string):Observable<Factura[]>{
+    return this.http.get<Factura[]>(`${this.urlEndPoint}/dia/${term1}/${term2}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+
+  //SVDY 25022023 - Traer factura por nro de boleta
+  getFacturaPorBoleta(term:string):Observable<Factura>{
+    return this.http.get<Factura>(`${this.urlEndPoint}/boleta/${term}`,{headers:this.agregarAuthorizationHeader()}).pipe(
       catchError(e=>{
         this.isNoAutorizado(e);
         return throwError(e);
