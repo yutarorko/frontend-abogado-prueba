@@ -1,7 +1,7 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 //PAra consumir peticiones http
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 
 import { registerLocaleData } from '@angular/common';
@@ -22,6 +22,30 @@ import { CuotasComponent } from './facturas/cuotas.component';
 import { DetalleFacturaComponent } from './facturas/detalle-factura.component';
 import { FormTramiteComponent } from './tramites/form-tramite.component';
 import { LoginComponent } from './usuarios/login.component';
+import { MultasComponent } from './multas/multas.component';
+import { MultasformComponent } from './multas/multasform/multasform.component';
+import { MultasAsigComponent } from './multas/multas-asig/multas-asig.component';
+import { PagosComponent } from './pagos/pagos.component';
+import { MultaPagoComponent } from './multas/multa-pago/multa-pago.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { InterceptorService } from './spinner/interceptor.service';
+import { FormUniversidadComponent } from './universidades/form-universidad/form-universidad.component';
+import { HistorialPagosComponent } from './reportes/historial-pagos/historial-pagos.component';
+import { ReporteHabilidadComponent } from './reportes/reporte-habilidad/reporte-habilidad.component';
+import { ReporteCobrosComponent } from './reportes/reporte-cobros/reporte-cobros.component';
+import { IncorporacionesComponent } from './reportes/incorporaciones/incorporaciones.component';
+import { IncorMensualComponent } from './reportes/incor-mensual/incor-mensual.component';
+import { ManUsuarioComponent } from './usuarios/man-usuario/man-usuario.component';
+import { CrearUsuComponent } from './usuarios/man-usuario/crear-usu.component';
+import { CursosComponent } from './cursos/cursos.component';
+import { ExtornosComponent } from './extornos/extornos.component';
+import { FormCursoComponent } from './cursos/form-curso.component';
+import { ShowCursoComponent } from './cursos/show-curso.component';
+import { PagoCursosComponent } from './facturas/pago-cursos.component';
+import { ReporteExtornosComponent } from './reportes/reporte-extornos/reporte-extornos.component';
+import { MostrarComponent } from './colegiados/detalle/mostrar.component';
+import { PdfBoletaComponent } from './pdf-boleta/pdf-boleta.component';
+import { BuscarFacturaComponent } from './buscar-factura/buscar-factura.component';
 
 registerLocaleData(localeES,'es');
 
@@ -30,7 +54,11 @@ const routes: Routes = [
   {path:'login', component:LoginComponent},
   {path:'colegiados', component:ColegiadosComponent},
   {path: 'universidades',component:UniversidadesComponent},
+  {path: 'universidades/form',component:FormUniversidadComponent},
+  {path: 'universidades/form/:id',component:FormUniversidadComponent},
   {path: 'colegiados/detalle/:id',component:DetalleComponent},
+  //SVDY 10022023 visualizar colegiado
+  {path: 'colegiados/mostrar/:id',component:MostrarComponent},
   {path: 'colegiados/form',component:FormComponent},
   {path: 'colegiados/form/:id',component:FormComponent},
   {path: 'facturas/form/:colegiadoId',component:FacturasComponent},
@@ -39,6 +67,36 @@ const routes: Routes = [
   {path: 'tramites',component:TramitesComponent},
   {path: 'tramites/form',component:FormTramiteComponent},
   {path: 'tramites/form/:id',component:FormTramiteComponent},
+  //SVDY 19022023 Ver boletas de cuotas,multas, tramites y cursos
+  {path: 'boleta-de-pago/:id',component:PdfBoletaComponent},
+  //SVDY 26022023 Buscar Boleta por nro de boleta
+  {path: 'buscar-boleta',component:BuscarFacturaComponent},
+  //multas
+  {path: 'multas',component:MultasComponent},
+  {path: 'multas/form',component:MultasformComponent},
+  {path: 'multas/asignadas/:id',component:MultasAsigComponent},
+  {path: 'multas/pagar/:id',component:MultaPagoComponent},
+  //cursos
+  {path: 'cursos',component:CursosComponent},
+  {path: 'cursos/form',component:FormCursoComponent},
+  {path: 'cursos/form/:id',component:FormCursoComponent},
+  {path: 'cursos/ver/:id',component:ShowCursoComponent},
+  {path: 'cursos/pagar/:colegiadoId',component:PagoCursosComponent},
+  //Pagos
+  {path: 'pagos/:id',component:PagosComponent},
+  //Extornos
+  {path: 'extornos',component:ExtornosComponent},
+  //Reportes
+  {path: 'reportes/historial-pagos',component:HistorialPagosComponent},
+  {path: 'reportes/habilidades',component:ReporteHabilidadComponent},
+  {path: 'reportes/cobros',component:ReporteCobrosComponent},
+  {path: 'reportes/incorporaciones',component:IncorporacionesComponent},
+  {path: 'reportes/incorporaciones-mensual',component:IncorMensualComponent},
+  {path: 'reportes/extornos',component:ReporteExtornosComponent},
+  //Usuarios y roles
+  {path: 'mantenimiento-usuario',component:ManUsuarioComponent},
+  {path: 'crear-usuario',component:CrearUsuComponent},
+  {path: 'crear-usuario/:id',component:CrearUsuComponent},
 ];
 
 @NgModule({
@@ -54,6 +112,28 @@ const routes: Routes = [
     DetalleFacturaComponent,
     FormTramiteComponent,
     LoginComponent,
+    MultasComponent,
+    MultasformComponent,
+    MultasAsigComponent,
+    PagosComponent,
+    MultaPagoComponent,
+    FormUniversidadComponent,
+    HistorialPagosComponent,
+    ReporteHabilidadComponent,
+    ReporteCobrosComponent,
+    IncorporacionesComponent,
+    IncorMensualComponent,
+    ManUsuarioComponent,
+    CrearUsuComponent,
+    CursosComponent,
+    ExtornosComponent,
+    FormCursoComponent,
+    ShowCursoComponent,
+    PagoCursosComponent,
+    ReporteExtornosComponent,
+    MostrarComponent,
+    PdfBoletaComponent,
+    BuscarFacturaComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,10 +142,12 @@ const routes: Routes = [
     HttpClientModule,
     PrimeNgModule,
     BrowserAnimationsModule,
+    NgxSpinnerModule,
     RouterModule.forRoot(routes)
   ],
   providers: [
     {provide: LOCALE_ID,useValue: 'es'},
+    {provide: HTTP_INTERCEPTORS, useClass: InterceptorService,multi: true}
   ],
   bootstrap: [AppComponent]
 })

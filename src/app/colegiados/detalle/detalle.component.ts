@@ -7,8 +7,7 @@ import { Factura } from '../../facturas/models/factura';
 
 @Component({
   selector: 'app-detalle',
-  templateUrl: './detalle.component.html',
-  styleUrls: ['./detalle.component.css']
+  templateUrl: './detalle.component.html'
 })
 export class DetalleComponent implements OnInit {
 
@@ -26,8 +25,6 @@ export class DetalleComponent implements OnInit {
   ngOnInit(): void {
     this.cargarColegiado();
     this.primengConfig.ripple = true;
-    
-    console.log(this.colegiado.apellido)
   }
 
   cargarColegiado():void{

@@ -6,11 +6,14 @@
     </div>
     
     <div class="p-toolbar-group-right">
-        <p-button [routerLink]="['/colegiados']" icon="pi pi-times" styleClass="p-button-danger"></p-button>
+        <p-button (click)="mostrarBar()"  icon="pi pi-check-circle" label="Validar cuotas" styleClass="p-button-success"></p-button>
     </div>
 </p-toolbar>
+<div *ngIf="content == true">
+    <p-progressBar  [style]="{'height': '10px'}" [value]="value" ></p-progressBar>
+</div>
 
-<h3 class="text-layout">Estado del colegiado</h3>
+<h3 class="text-layout">Estado del colegiado: </h3>
 <p-messages severity="info">
     <ng-template pTemplate>
         <div class="ml-4">El colegiado <b> < {{factura.colegiado.nombre}} {{factura.colegiado.apellido}} > </b> pagó su cuota hasta : &nbsp;&nbsp;</div>
@@ -34,7 +37,7 @@
     </ng-template>
 </p-messages>
 
-<p-messages severity="error" *ngIf=" mesesDeuda>3">
+<p-messages *ngIf="factura.colegiado.habilidad.id!=7 && mesesDeuda>3" severity="error">
     <ng-template pTemplate >
         <div class="ml-4" >
             Este colegiado no paga sus cuotas desde hace <b>{{mesesDeuda}} meses</b> y su deuda correspondiente es: <b> S/{{mesesDeuda*15}} soles</b>. Su estado es : &nbsp;&nbsp;
@@ -43,6 +46,14 @@
     </ng-template>
 </p-messages>
 
+<p-messages *ngIf="factura.colegiado.habilidad.id==7 && mesesDeuda>3" severity="error">
+    <ng-template pTemplate >
+        <div class="ml-4" >
+            Este colegiado no paga sus cuotas desde hace <b>{{mesesDeuda}} meses</b> y su deuda correspondiente es: <b> S/{{mesesDeuda*15}} soles</b>. Su estado es : &nbsp;&nbsp;
+        </div>
+        <p-tag styleClass="mr-2" severity="danger" value="HABILITADO - ACTIVO (OJO: COLEGIADO EN FRACCIONAMIENTO)"></p-tag>
+    </ng-template>
+</p-messages>
 
 <p-card >
     <form #facturaForm="ngForm">
@@ -54,31 +65,23 @@
                     <input readonly type="text" name="colegiado"  pInputText  value="{{factura.colegiado.nombre}} {{factura.colegiado.apellido}}">         
                 </div>
             </div>
-            <div class="col-12 md:col-6">
-                <h4 class="text-layout" style="margin-top: 0; margin-bottom: 1rem;">Serie</h4>
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
-                    <input pInputText type="text" name="serie" [(ngModel)]="factura.serie" required pInputText  autocomplete="off"> 
-                </div>
+            <div class="col-12 md:col-4">
+                <h4 class="text-layout" style="margin-top: 0; margin-bottom: 1rem;">Series</h4>
+                <p-dropdown [options]="tiposSeries"  [(ngModel)]="factura.serie" name="serie" placeholder="Seleccionar serie" optionValue="nombre" optionLabel="nombre"
+                    [showClear]="true">
+                </p-dropdown> 
             </div>
-            <div class="col-12 md:col-6">
-                <h4 class="text-layout" style="margin-top: 0; margin-bottom: 1rem;">Número de boleta</h4>
-                <div class="p-inputgroup">
-                    <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
-                    <input type="text" name="numeroBoleta" [(ngModel)]="factura.numeroBoleta" required pInputText autocomplete="off">         
-                </div>
-            </div>
-            <div class="col-12 md:col-6">
+            <div class="col-12 md:col-4">
                 <h4 class="text-layout" style="margin-top: 0; margin-bottom: 1rem;">Método de pago</h4>
                 <p-dropdown [options]="tiposPagos"  [(ngModel)]="factura.formaPago" name="formaPago" placeholder="Seleccionar metodo de pago" optionValue="nombre" optionLabel="nombre"
                     [showClear]="true">
                 </p-dropdown>
             </div>
-            <div class="col-12 md:col-6">
-                <h4 class="text-layout" style="margin-top: 0; margin-bottom: 1rem;">Número de transacción (no obligatorio)</h4>
+            <div class="col-12 md:col-4">
+                <h4 class="text-layout" style="margin-top: 0; margin-bottom: 1rem;">Número de boleta RAPIFAC</h4>
                 <div class="p-inputgroup">
                     <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
-                    <input type="text" name="numeroTransaccion"  pInputText autocomplete="off">         
+                    <input type="text" name="numeroTransaccion" [(ngModel)]="factura.numeroTransaccion"  pInputText autocomplete="off">         
                 </div>
             </div>
             <div class="col-12 md:col-12">
@@ -100,7 +103,8 @@
                 <p-table responsiveLayout="scroll" [value]="factura.items">
                     <ng-template pTemplate="header">
                         <tr>
-                            <th>Tramite</th>
+                            <th>Cuota</th>
+                            <th>Descripción</th>
                             <th>Precio</th>
                             <th>Cantidad de meses a pagar</th>
                             <th>sub Total</th>
@@ -111,6 +115,7 @@
                     <ng-template pTemplate="body" let-item>
                         <tr>
                             <td>{{item.tramite.nombre}}</td>
+                            <td>{{item.tramite.descripcion}}</td>
                             <td>S/ {{item.tramite.precio}}</td>
                             <td><input type="number"[min]="1" value="{{item.cantidad}}" (change)="actualizarCantidad(item.tramite.id,$event)"></td>
                             <td>S/ {{item.calcularImporte()}}</td>
@@ -123,7 +128,7 @@
 
         <p-toolbar *ngIf="factura.resolucion">
             <div class="p-toolbar-group-right">
-                <h4 class="text-layout">Descuento: </h4>
+                <h4 class="text-layout">Descuento: S/ </h4>
                 <input type="text" name="descuento"  pInputText autocomplete="off"  [(ngModel)]="factura.descuento">  
             </div>
         </p-toolbar>
@@ -137,5 +142,7 @@
             </div>
         </p-toolbar>
     </form>
+    <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-circus" [fullScreen] = "true"><p style="color: white" > Cargando Yawar Tech... </p></ngx-spinner>
+    <h5><b>OJO: </b> Por favor presione el botón 'Validar cuotas', si las cuotas no se visualizan correctamente. </h5>
     <br>
 </p-card>

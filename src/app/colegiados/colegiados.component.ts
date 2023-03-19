@@ -6,6 +6,7 @@ import { PrimeNGConfig } from 'primeng/api';
 import {MenuItem} from 'primeng/api';
 import {MessageService} from 'primeng/api';
 import { AuthService } from '../usuarios/auth.service';
+import { SpinnerService } from '../spinner/spinner.service';
 
 @Component({
   selector: 'app-colegiados',
@@ -24,10 +25,13 @@ export class ColegiadosComponent implements OnInit {
     public colegiadoService: ColegiadoService,
     public authService:AuthService,
     private primengConfig: PrimeNGConfig,
-    private messageService: MessageService
+    private messageService: MessageService,
+    //inyectamos el spinner
+    public spinnerService: SpinnerService
   ) { }
 
   ngOnInit(): void {
+    this.primengConfig.ripple = true;
     this.items = [
       {
           label: 'Número de DNI',
@@ -51,7 +55,7 @@ export class ColegiadosComponent implements OnInit {
       }
     ];
     
-    this.primengConfig.ripple = true;
+    
   }
   buscarColegiadoByDni(){
     if(this.term.length==0 || this.term.length!=8){

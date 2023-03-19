@@ -13,10 +13,12 @@ export class Colegiado {
     distrito:string;
     domicilio:string;
     trabajo:string;
+    imagenId:string;
 
     universidad: Universidad;
 
     telefono:string;
+    telefono2:string;
     correo:string;
 
     habilidad:Habilidad;
@@ -25,6 +27,8 @@ export class Colegiado {
     lm:string;
     sexo:string;
     fechaColegiatura:string;
+    actualizador:string;
+    otros:string;
 
     facturas:Factura[]=[];
 }

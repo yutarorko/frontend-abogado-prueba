@@ -24,10 +24,27 @@ import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 import {PasswordModule} from 'primeng/password';
+import {DividerModule} from 'primeng/divider';
+import {DialogModule} from 'primeng/dialog';
+import {BadgeModule} from 'primeng/badge';
+import {TooltipModule} from 'primeng/tooltip';
+import {ConfirmPopupModule} from 'primeng/confirmpopup';
+import {ChartModule} from 'primeng/chart';
+import {RatingModule} from 'primeng/rating';
+import {InputNumberModule} from 'primeng/inputnumber';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import {InputMaskModule} from 'primeng/inputmask';
+import {SelectButtonModule} from 'primeng/selectbutton';
+import {ImageModule} from 'primeng/image';
+import {FileUploadModule} from 'primeng/fileupload';
+import {HttpClientModule} from '@angular/common/http';
+
 
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {ProgressBarModule} from 'primeng/progressbar';
+
 
 
 
@@ -60,7 +77,22 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MessagesModule,
     MessageModule,
     TagModule,
-    PasswordModule
+    PasswordModule,
+    DividerModule,
+    ProgressBarModule,
+    DialogModule,
+    BadgeModule,
+    TooltipModule,
+    ConfirmPopupModule,
+    ChartModule,
+    RatingModule,
+    InputNumberModule,
+    ConfirmDialogModule,
+    InputMaskModule,
+    SelectButtonModule,
+    ImageModule,
+    FileUploadModule,
+    HttpClientModule
   ]
 })
 export class PrimeNgModule { }

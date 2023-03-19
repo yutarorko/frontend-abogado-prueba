@@ -7,6 +7,8 @@ import { Colegiado } from './colegiado';
 import Swal from 'sweetalert2';
 
 import { URL_BACKEND } from '../config/config';
+import { Sistema } from './sistema';
+import { Imagen } from './imagen';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +17,7 @@ export class ColegiadoService {
 
   private urlEndPoint:string = URL_BACKEND + '/api';
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json' });
+  
 
   constructor(private http:HttpClient, private router:Router,public authService:AuthService) { }
 
@@ -133,6 +136,25 @@ export class ColegiadoService {
       })
     );
   }
+  //Obtener un colegiado por colegiatura
+  getColegiadoByCole(term:string):Observable<Colegiado>{
+    return this.http.get<Colegiado>(`${this.urlEndPoint}/colegiados/reporte/${term}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+
+        //si no tiene permiso
+        if(this.isNoAutorizado(e)){
+          //no tiene permiso para crear
+          return throwError(e);
+        }
+
+        if(e.status != 401 && e.error.Mensaje){
+          this.router.navigate(['/colegiados']);
+          console.log(e.error.Mensaje);
+        }
+        return throwError(e);
+      })
+    );
+  }
   update(colegiado: Colegiado) : Observable<any>{
     return this.http.put<any>(`${this.urlEndPoint}/colegiados/${colegiado.id}`,colegiado,{headers:this.agregarAuthorizationHeader()}).pipe(
       catchError(e =>{
@@ -148,6 +170,81 @@ export class ColegiadoService {
         if(e.error.Mensaje){
           console.log(e.error.Mensaje);
         }
+        return throwError(e);
+      })
+    );
+  }
+  //Mensajes del sistema
+  getSistema():Observable<Sistema[]>{
+    return this.http.get<Sistema[]>(this.urlEndPoint+`/sistema`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+  //Obtener cumpleañeros
+  getCumples():Observable<Colegiado[]>{
+    return this.http.get<Colegiado[]>(this.urlEndPoint+`/colegiados/cumple`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+  //Obtener lista de colegiados en el ultimo año
+  getColegiadosEsteAnio():Observable<Colegiado[]>{
+    return this.http.get<Colegiado[]>(this.urlEndPoint+`/colegiados/recientes`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+  //Subir imagen a cloudinary
+  uploadImagen(imagen:File,id:string):Observable<any>{
+    const formData:FormData = new FormData();
+    formData.append('multipartFile',imagen);
+
+    return this.http.post<any>(this.urlEndPoint+`/upload/${id}`,formData).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+  //Eliminar imagen a cloudinary
+  deleteImagen(id:number):Observable<any>{
+    return this.http.delete<any>(this.urlEndPoint+`/delete/${id}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+  //Obtener imagen
+  mostrarImagen(colegitura:string):Observable<Imagen>{
+    return this.http.get<Imagen>(this.urlEndPoint+`/upload/${colegitura}`).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+  //Obtener reporte de colegiados por habilidad
+  obtenerReporteHabilidad(habilidad:number):Observable<any[]>{
+    return this.http.get<any[]>(this.urlEndPoint+`/reportes/${habilidad}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+  //Obtener reporte de colegiados habilitados-activos
+  obtenerReporteHabilidadActivo():Observable<any[]>{
+    return this.http.get<any[]>(this.urlEndPoint+`/reportes-activos`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
         return throwError(e);
       })
     );

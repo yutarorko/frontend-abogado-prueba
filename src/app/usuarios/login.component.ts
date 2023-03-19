@@ -3,6 +3,8 @@ import { Usuario } from './usuario';
 import Swal from 'sweetalert2';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
+import { ColegiadoService } from '../colegiados/colegiado.service';
+import { Sistema } from '../colegiados/sistema';
 
 @Component({
   selector: 'app-login',
@@ -13,15 +15,21 @@ export class LoginComponent implements OnInit {
   titulo: string = 'Por favor Inicie Sesión';
 
   usuario:Usuario;
+  sistema:Sistema;
 
-  constructor(public authService:AuthService ,private router:Router) {
+  constructor(public authService:AuthService ,private router:Router, public colegiadoService:ColegiadoService) {
     this.usuario=new Usuario();
    }
 
   ngOnInit(): void {
+    this.colegiadoService.getSistema().subscribe(sis => {
+      this.sistema = sis[0];
+      //console.log(this.sistema);
+    })
     if(this.authService.isAuthenticated()){
+      
       Swal.fire('Sesión Caducada',`Hola ${this.authService.usuario.nombre} ${this.authService.usuario.apellido}, por favor cierra sesión y vuelve a iniciar sesión!`,'info');
-      this.router.navigate(['/colegiados']);
+      this.router.navigate(['/login']);
     }
   }
 
@@ -42,6 +50,10 @@ export class LoginComponent implements OnInit {
         this.authService.guardarUsuario(response.access_token);
         this.authService.guardarToken(response.access_token);
         let usuario = this.authService.usuario;
+        //SVDY 12022023 Si el usuario esta deshabilitado no podra ingresar al sistema
+        if(usuario.enabled==false){
+          this.authService.logout();
+        }
         this.router.navigate(['/colegiados']);
         
         Swal.fire('Éxito en inicio de sesión',`Bienvenido ${usuario.nombre} ${usuario.apellido}, has iniciado sesión con éxito!!`,'success').then(() => {

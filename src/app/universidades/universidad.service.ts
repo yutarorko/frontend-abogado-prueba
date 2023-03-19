@@ -49,4 +49,31 @@ export class UniversidadService {
       })
     );
   }
+
+  getUniversidad(id:number):Observable<Universidad>{
+    return this.http.get<Universidad>(`${this.urlEndPoint}/universidades/${id}`,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+
+  saveUniversidad(universidad:Universidad):Observable<Universidad>{
+    return this.http.post<Universidad>(this.urlEndPoint+`/universidades`,universidad,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
+
+  updateUniversidad(universidad:Universidad):Observable<Universidad>{
+    return this.http.put<Universidad>(`${this.urlEndPoint}/universidades/${universidad.id}`,universidad,{headers:this.agregarAuthorizationHeader()}).pipe(
+      catchError(e=>{
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
+  }
 }

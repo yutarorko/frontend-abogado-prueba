@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import {Message,MessageService} from 'primeng/api';
 import { Tramite } from './models/tramite';
 import { TramiteService } from '../tramites/services/tramite.service';
+import { AuthService } from '../usuarios/auth.service';
 
 @Component({
   selector: 'app-cuotas',
@@ -30,6 +31,23 @@ export class CuotasComponent implements OnInit {
 
   tiposPagos = [{nombre:"efectivo"},{nombre:"deposito"}];
 
+  tiposSeries = [
+    {nombre:"B001"},
+    {nombre:"B002"},
+    {nombre:"B003"},
+    {nombre:"E001"},
+    {nombre:"E002"},
+    {nombre:"F001"},
+    {nombre:"F002"},
+    {nombre:"F003"},
+    {nombre:"S001"},
+    {nombre:"S002"},
+    {nombre:"Q001"},
+    {nombre:"Q002"}
+  ];
+
+  aux:string;
+
   msgs1: Message[];
 
   constructor(
@@ -39,7 +57,8 @@ export class CuotasComponent implements OnInit {
     public facturaService:FacturaService,
     private router:Router,
     public tramiteService:TramiteService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -53,9 +72,11 @@ export class CuotasComponent implements OnInit {
           let nuevoItem = new ItemFactura();
           
           let verificarFacturas:Factura[] = colegiado.facturas.filter(f =>{
-            return f.cuota == 'si';
+            //SVDY 06012020 se agrega validación si factura esta extornada
+            console.log(f);
+            return f.tipo == 'cuota' && f.cancelado == false;
           });
-          //console.log(colegiado.fechaColegiatura);
+          console.log(verificarFacturas);
           let v = this.validar01(colegiado.fechaColegiatura);
 
           colegiado.fechaColegiatura = v;
@@ -100,7 +121,7 @@ export class CuotasComponent implements OnInit {
       this.dateFrom.setFullYear(this.fechaHastaDondePago.getFullYear());
 
       this.mesesDeuda = this.diferenciaMeses(this.dateFrom,this.dateTo);
-      console.log('zzz',this.mesesDeuda);
+      //console.log('zzz',this.mesesDeuda);
     }
     else{
       this.fechaHastaDondePago = new Date(verificarFacturas[verificarFacturas.length-1].fechaHasta);
@@ -110,9 +131,9 @@ export class CuotasComponent implements OnInit {
       this.dateFrom.setMonth(this.fechaHastaDondePago.getMonth());
       this.dateFrom.setFullYear(this.fechaHastaDondePago.getFullYear());
       this.mesesDeuda = this.diferenciaMeses(this.dateFrom,this.dateTo);
-      console.log('zzz',this.mesesDeuda);
+      //console.log('zzz',this.mesesDeuda);
 
-      console.log("Que psa: ",this.fechaHastaDondePago);
+      //console.log("Que psa: ",this.fechaHastaDondePago);
     }
   }
   //Calcular meses entre 2 fechas
@@ -162,11 +183,21 @@ export class CuotasComponent implements OnInit {
   }
   //Guardar factura
   create():void{
-    if(this.factura.serie && this.factura.numeroBoleta && this.factura.formaPago){
-      this.factura.cuota = "si";
+    //Validamos el nro de factura unica
+    //let n;
+    //reasignamos el codigo 
+    //this.facturaService.validarFactura(this.factura.serie+"-c"+this.factura.numeroBoleta).subscribe(n=>{
+      //if(n == 0 ){
+    if(this.factura.serie && this.factura.formaPago){
+      this.factura.tipo = "cuota";
+      this.factura.cancelado = false;
+      //tiposFilial = [{nombre:"CUSCO",valor:1},{nombre:"QUILLABAMBA",valor:2},{nombre:"ESPINAR",valor:3},{nombre:"SANTA MONICA",valor:4}];
+      this.factura.filial = this.authService.usuario.filial; 
+      this.factura.responsable = this.authService.usuario.nombre + ' ' + this.authService.usuario.apellido;
       if(!this.factura.resolucion){
         this.factura.descuento = 0;
       }
+
       let n = 0;
       n =  this.factura.items[0].cantidad;
       var a:any=[];
@@ -175,36 +206,58 @@ export class CuotasComponent implements OnInit {
       }
 
       this.factura.fechaHasta = this.fechaHastaDondePago.setMonth(this.fechaHastaDondePago.getMonth()+(a.length)).toString();
-
+      //reasignamos el codigo de boleta
+      //this.factura.numeroBoleta = this.factura.serie+"-c"+this.factura.numeroBoleta;
       this.facturaService.create(this.factura).subscribe(factura =>{
-
+        
         Swal.fire('Nueva boleta creada',`Boleta de pago del colegiado ${factura.colegiado.nombre} ${factura.colegiado.apellido}, creada con éxito!`,'success');
-        this.router.navigate(['/colegiados']);
+        //this.router.navigate(['colegiados/detalle',factura.colegiado.id]);
+        this.router.navigate(['boleta-de-pago',factura.id]);
       });
     }
     else{
       this.showError();
-      /*
-      let fecha = new Date();
-      fecha = this.fechaHastaDondePago;
-      console.log(a.length);
-      let prueba = new Date();
-      console.log("fecha",(fecha.setMonth(this.fechaHastaDondePago.getMonth()+(a.length))));
-      */
-      //this.showError();
     }
+        /*
+      }
+      else{
+        this.showError();
+        
+      }*/
+    //})
   }
   //Validacion
   showError() {
     if(!this.factura.serie){
       this.messageService.add({severity:'warn', summary: 'Error: Complete datos', detail: 'El número de serie es obligatorio, por favor complete.'});
     }
+    /*
     if(!this.factura.numeroBoleta){
       this.messageService.add({severity:'warn', summary: 'Error: Complete datos', detail: 'El número de boleta es obligatorio, por favor complete.'});
-    }
+    }*/
     if(!this.factura.formaPago){
       this.messageService.add({severity:'warn', summary: 'Error: Complete datos', detail: 'Por favor elija el metodo de pago.'});
     }
-    
+    /*
+    else{
+      this.messageService.add({severity:'warn', summary: 'Error: EN EL NÚMERO DE BOLETA', detail: 'El número de boleta ya existe en nuestra BASE DE DATOS, por favor verifique.'});
+      
+    }*/
+  }
+  //Animacion bar
+  content:boolean=false;
+  value: number = 95;
+  mostrarBar()  
+  {  
+    this.content=true;
+    let interval = setInterval(() => {
+      this.value = this.value + Math.floor(Math.random() * 10) + 4;
+      if (this.value >= 100) {
+          this.value = 100;
+          this.messageService.add({severity: 'success', summary: 'VALIDACIÓN CORRECTA', detail: 'Multas validadas correctamente :)'});
+          clearInterval(interval);
+          location.reload(); 
+      }
+  },500);
   }
 }

@@ -13,7 +13,14 @@ export class Factura {
     fechaPago:string;
     resolucion:string;
     observacion:string;
-    cuota:string;
+    responsable:string;
+    filial:Number;
+    cancelado:boolean;
+    razon:string;
+    extornador:string;
+
+    tipo:string;
+    
     fechaHasta: string;
 
     items:ItemFactura[]=[];
